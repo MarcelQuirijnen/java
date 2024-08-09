@@ -23,13 +23,6 @@ Contains the unit test example for the main code.
 Uses JUnit v4. Test code is not production ready.
 
 ##Thanks
-Thanks for the challenge, XModeSocial. I do not consider myself a Java developer, but I enjoyed comming up with a solution .. and some help from stackoverflow.
-Looking forward to interview with you guys.
-Have a great week in any case.
+Thanks for the challenge, XModeSocial. I do not consider myself a Java developer, but I enjoyed comming up with a solution.
 
--Marcel Quirijnen
- 870-416-3775
- resume@marcelq.com
- http://developer.marcelq.com
- http://www.linkedin.com/in/marcelq
 
