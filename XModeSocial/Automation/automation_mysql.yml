@@ -1,0 +1,56 @@
+---
+#
+# Ansible automation file
+#   1. Install mysql server on the db host(s)
+#   2. Create application database
+#   3. Create application user and password
+#   4. Upload table creation + seed data script
+#   5. execute script mentioned in setp 4
+#
+# Run with `ansible-playbook mysql.yml`
+#
+# 'db' is name of database hosts group in /etc/ansible/hosts
+- hosts: db
+  vars_files: 
+#   separate code and data
+	- db_vars.yml                         
+  become: yes
+  tasks:
+   - name: Ensure MySQL is installed
+#    assume Redhat linux
+     yum:                                 
+       name: '{{ item }}'
+       state: present
+#      create loop in case we need more than just mysql server       
+     with_items:                        
+       - mysql-server
+       - mysql-client
+       - libmysql-java
+   - name: Ensure that MySQL is up and running and enabled at boot
+     service: name=mysql state=started enabled=true
+   - name: create an application database
+     mysql_db:
+       name: '{{ database.name }}'
+       state: present
+       login_user: root
+       login_password: '{{ root_password }}'
+   - name: create application user
+     mysql_user:
+       name: '{{ database.username }}'
+       password: '{{ database.password }}'
+       host: '%'
+       priv: '{{ database.name }}.*:ALL'
+       login_user: root
+       login_password: '{{ root_password }}'
+       state: present
+   - name: Upload table creation script
+     copy:
+       src: ./xmodesocial.sql
+       dest: /tmp/
+   - name: Create application table and some data records
+     mysql_db:
+       state: import
+       name: '{{ database.name }}'
+       target: /tmp/xmodesocial.sql
+       login_user: root
+       login_password: '{{ root_password }}'
